@@ -22,10 +22,15 @@ app.use('/api/leads', leadRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {
-  res.json({ message: 'CRMTS Backend API is running' });
+  res.json({ message: 'CRMTS Backend API is running on Vercel' });
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`[server]: Server is running at http://localhost:${PORT}`);
-});
+// Export the app for Vercel
+export default app;
+
+// Start Server locally only
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`[server]: Server is running at http://localhost:${PORT}`);
+  });
+}

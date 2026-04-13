@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { LayoutDashboard, Users, MessageSquare, Send, Settings, LogOut, BarChart3 } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 function App() {
   const [role, setRole] = useState<'MANAGER' | 'STAFF'>('MANAGER'); // Mocked for demo
   const [activeTab, setActiveTab] = useState('dashboard');
