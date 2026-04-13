@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Download, Upload, Search, Filter, X } from 'lucide-react';
 import api from '../lib/api';
-// @ts-ignore
 import * as XLSX from 'xlsx';
 
 export function Leads() {
