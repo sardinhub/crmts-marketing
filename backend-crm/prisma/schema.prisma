@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MANAGER
+  STAFF
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lead {
+  id          String   @id @default(cuid())
+  phone       String   @unique
+  name        String?
+  source      String?  @default("Unknown")
+  metadata    Json?    // For custom Excel columns
+  status      String   @default("NEW") // NEW, CONTACTED, RESPONDED, ENROLLED
+  activities  Activity[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  content     String
+  status      String   @default("DRAFT") // DRAFT, RUNNING, COMPLETED
+  scheduledAt DateTime?
+  sentCount   Int      @default(0)
+  activities  Activity[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String   // CHAT, BROADCAST, FOLLOW_UP
+  content     String
+  direction   String   // IN, OUT
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id])
+  campaignId  String?
+  campaign    Campaign? @relation(fields: [campaignId], references: [id])
+  createdAt   DateTime @default(now())
+}
