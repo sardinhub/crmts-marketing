@@ -5,6 +5,8 @@ import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { Leads } from './pages/Leads';
 import { Chatbot } from './pages/Chatbot';
+import { Campaign } from './pages/Campaign';
+import { Analytics } from './pages/Analytics';
 
 // Shared PrivateRoute component
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -48,10 +50,13 @@ function App() {
 
           <Route path="/campaign" element={
             <PrivateRoute>
-              <div className="glass-card" style={{ padding: '30px' }}>
-                <h2>WhatsApp Campaigns</h2>
-                <p style={{ color: 'var(--text-secondary)', marginTop: '20px' }}>Halaman sedang dalam pengembangan...</p>
-              </div>
+              <Campaign />
+            </PrivateRoute>
+          } />
+
+          <Route path="/analytics" element={
+            <PrivateRoute>
+              <Analytics />
             </PrivateRoute>
           } />
 

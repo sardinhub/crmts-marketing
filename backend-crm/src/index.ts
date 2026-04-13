@@ -16,9 +16,11 @@ app.use(express.json());
 // Routes
 import authRoutes from './routes/auth.routes';
 import leadRoutes from './routes/lead.routes';
+import campaignRoutes from './routes/campaign.routes';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadRoutes);
+app.use('/api/campaigns', campaignRoutes);
 
 // Basic Route
 app.get('/', (req, res) => {

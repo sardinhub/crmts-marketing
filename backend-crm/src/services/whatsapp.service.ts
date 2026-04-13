@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { prisma } from '../lib/prisma';
 
 /**
  * Modular WhatsApp Service
@@ -28,5 +29,43 @@ export const sendMessage = async (to: string, message: string) => {
       console.error('[WA Gateway Error]:', error);
       return { success: false, error: 'Failed to send via Gateway' };
     }
+  }
+};
+
+/**
+ * Send mass messages with a random delay (5-10s) to prevent blocking.
+ * Replaces {{nama}} with the lead's name.
+ */
+export const sendBroadcast = async (leads: any[], template: string, campaignId: string) => {
+  const MIN_DELAY = 5000; // 5 seconds
+  const MAX_DELAY = 10000; // 10 seconds
+
+  for (const lead of leads) {
+    const personalizedMessage = template.replace('{{nama}}', lead.name || 'Pelanggan');
+    
+    // Send message via configured provider
+    const result = await sendMessage(lead.phone, personalizedMessage);
+    
+    // Log activity in database
+    await prisma.activity.create({
+      data: {
+        type: 'BROADCAST',
+        content: personalizedMessage,
+        direction: 'OUT',
+        leadId: lead.id,
+        campaignId: campaignId
+      }
+    });
+
+    if (result.success) {
+      await prisma.campaign.update({
+        where: { id: campaignId },
+        data: { sentCount: { increment: 1 } }
+      });
+    }
+
+    // Delay before next message to follow anti-spam guidelines
+    const delay = Math.floor(Math.random() * (MAX_DELAY - MIN_DELAY + 1) + MIN_DELAY);
+    await new Promise(resolve => setTimeout(resolve, delay));
   }
 };
